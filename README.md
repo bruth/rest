@@ -1,10 +1,10 @@
-# The REST Collection
+## The REST & HTTP Collection
 
 ### ETag & Last-Modified
-_cache validation, conditional requests, optimistic concurrency_
+_Features: cache validation, conditional requests, optimistic concurrency_
 
-**These headers provide a way to compare the client and server state of
-a resource.**
+> These headers provide a way to compare the client and server state of
+> a resource.
 
 *Reduce bandwith.* An initial client request will get the data, while subsequent
 requests should simply return a `304 Not Modified` with no response body.
@@ -15,13 +15,13 @@ would be performed on stale data. To prevent resource corruption and
 [lost updates][concurrency control], always add one of these headers to validate
 the state.
 
-##### Caution
+#### Caution
 
 *Last-Modified might not be good enough.* HTTP dates only have resolution down to a
 second, thus if a resource's state changes in less than a second after being
 requested, the client could be using stale data until the next state change.
 
-##### Strategies
+#### Strategies
 
 *Reduce server processing.* Generate an ETag and use it as a key in a hash or
 key-value data store (memcache, redis) for fast existential lookup.

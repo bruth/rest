@@ -30,9 +30,12 @@ key-value data store (memcache, redis) for fast existential lookup.
 implementations use MD5 or SHA1 hashes, but for cache invalidation, their
 non-deterministic _feature_ makes it cumbersome to work with. 
 
-*Django pseudo-code.*
+*Django Example*
 
 ```python
+from django.db import models
+from django.core.cache import cache
+
 class VersionedModel(models.Model):
     version = models.IntegerField(default=0)
 
@@ -60,7 +63,7 @@ class VersionedModel(models.Model):
             'app': self._meta.app_label,
             'model': self._meta.module_name,
             'id': self.id,
-            'version': self.verion,
+            'version': self.version,
         }
         return '{app}.{model}-{id},{version}'.format(**kwargs)
 

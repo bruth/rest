@@ -27,8 +27,8 @@ requested, the client could be using stale data until the next state change.
 key-value data store (memcache, redis) for fast existential lookup.
 
 *Invalidate the key by unsetting it when the resource state changes.* Many ETag
-implementations use MD5 or SHA1 hashes, but for cache invalidation, their non-
-deterministic _feature_ makes it difficult to track. 
+implementations use MD5 or SHA1 hashes, but for cache invalidation, their
+non-deterministic _feature_ makes it cumbersome to work with. 
 
 *Django pseudo-code.*
 
@@ -43,7 +43,7 @@ class VersionedModel(models.Model):
         etag = self.invalidate_cache()
         self.version += 1
         try:
-            super(Song, self).save(*args, **kwargs)
+            super(VersionedModel, self).save(*args, **kwargs)
         except Exception, e:
             # Revert if the save failed
             self.version -= 1

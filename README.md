@@ -1,6 +1,11 @@
 # The REST & HTTP Collection
 
-## ETag & Last-Modified
+### General References
+
+- [Steps Toward the Glory of REST](http://martinfowler.com/articles/richardsonMaturityModel.html)
+- [Phil Karlton Quote](http://martinfowler.com/bliki/TwoHardThings.html)
+
+## Validation Caching: ETag & Last-Modified
 _Features: cache validation, conditional requests, optimistic concurrency_
 
 ### Usage
@@ -12,9 +17,9 @@ requests should simply return a `304 Not Modified` with no response body.
 
 **Validation of client data.** `PUT` and `PATCH` requests alters a resource's state,
 but if the resource's state changes right before the request is received, the action
-would be performed on stale data. To prevent resource corruption and
-[lost updates][concurrency control], always add one of these headers to validate
-the state.
+would be performed on stale data. To prevent resource corruption and the
+[lost update problem](http://www.w3.org/1999/04/Editing/), always add one of these
+headers to validate the state.
 
 ### Caution
 
@@ -138,4 +143,9 @@ class ModifiedModel(models.Model):
         return '{app}.{model}-{id},{version}'.format(**kwargs)
 ```
 
-[concurrency control]: http://en.wikipedia.org/wiki/Concurrency_control
+### References
+
+- [Precedence of ETag vs. Last-Modified](http://stackoverflow.com/a/1560098)
+- [Optimistic Concurrency](http://en.wikipedia.org/wiki/Concurrency_control)
+- [Lost Update Problem](http://www.w3.org/1999/04/Editing/)
+- [REST Better HTTP Cache](http://www.odino.org/301/rest-better-http-cache)

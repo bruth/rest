@@ -46,102 +46,10 @@ non-determinism makes it cumbersome to know what the ETag was before.
 
 ### Examples
 
-**ETag "ready" versioned abstract model (django).**
-
-```python
-from django.db import models
-from django.core.cache import cache
-
-class VersionedModel(models.Model):
-    version = models.IntegerField(default=0)
-
-    class Meta(object):
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        etag = self.invalidate_cache()
-        self.version += 1
-        try:
-            super(VersionedModel, self).save(*args, **kwargs)
-        except Exception, e:
-            # Revert if the save failed
-            self.version -= 1
-            cache.set(etag, 1)
-            raise e
-
-    def invalidate_cache(self):
-        etag = self.generate_etag()
-        cache.delete(etag)
-        return etag
-
-    def generate_etag(self):
-        kwargs = {
-            'app': self._meta.app_label,
-            'model': self._meta.module_name,
-            'id': self.id,
-            'version': self.version,
-        }
-        return '{app}.{model}-{id},{version}'.format(**kwargs)
-
-
-# music/models.py
-class Song(VersionedModel):
-    title = models.CharField(max_length=100)
-
-
-# interpreter
->>> song = Song(title='Here Come the Sun')
->>> song.save()
->>> cache.get('music.song-1,1)
-1
->>> song.title = 'Here Comes the Sun'
->>> song.save()
->>> cache.get('music.song-1,1)
->>> cache.get('music.song-1,2)
-1
-```
-
-**Use the modified date as the "version" for ETags (django).** It is very common for
-database tables to have a `modified` timestamp column. We can use that instead of
-adding an extra `version` column.
-
-```python
-from datetime import datetime
-from django.db import models
-from django.core.cache import cache
-
-class ModifiedModel(models.Model):
-    modified = models.DateTimeField()
-
-    class Meta(object):
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        etag = self.invalidate_cache()
-        last_modified = self.modified
-        self.modified = datetime.now()
-        try:
-            super(ModifiedModel, self).save(*args, **kwargs)
-        except Exception, e:
-            # Revert if the save failed
-            self.modified = last_modified
-            cache.set(etag, 1)
-            raise e
-
-    def invalidate_cache(self):
-        etag = self.generate_etag()
-        cache.delete(etag)
-        return etag
-
-    def generate_etag(self):
-        kwargs = {
-            'app': self._meta.app_label,
-            'model': self._meta.module_name,
-            'id': self.id,
-            'version': self.modified.isoformat(),
-        }
-        return '{app}.{model}-{id},{version}'.format(**kwargs)
-```
+- ETag "ready" Django model using a `version` number - https://gist.github.com/2001416
+- ETag "ready" Django model using a `modified` datetime - https://gist.github.com/2001429
+    - It is very common for database tables to have a `modified` timestamp column. We
+    can use that instead of adding an extra `version` column.
 
 ### References
 

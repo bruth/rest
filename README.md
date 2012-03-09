@@ -48,6 +48,7 @@ developer also wrote the Web API =)
 
 - [Steps Toward the Glory of REST](http://martinfowler.com/articles/richardsonMaturityModel.html)
 - [Phil Karlton Quote](http://martinfowler.com/bliki/TwoHardThings.html)
+- [How to GET a Cup of Coffee](http://www.infoq.com/articles/webber-rest-workflow)
 
 ## Validation Caching: ETag & Last-Modified
 _Features: cache validation, conditional requests, optimistic concurrency_

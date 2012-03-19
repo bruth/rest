@@ -102,3 +102,24 @@ non-determinism makes it cumbersome to know what the ETag was before.
 - [Optimistic Concurrency](http://en.wikipedia.org/wiki/Concurrency_control)
 - [Lost Update Problem](http://www.w3.org/1999/04/Editing/)
 - [REST Better HTTP Cache](http://www.odino.org/301/rest-better-http-cache)
+
+
+## Authentication & Authorization
+
+Authentication validates an identity via user-supplied credentials. This allows access with
+the server allows access to resources, but the granularity of access may be enforced by a
+client's authorization level. For example, all users that authenticate may have read-only
+access to resources, while authorized users may have access to send `PUT` or `DELELE`
+requests, thus altering the resources.
+
+Unlike authentication, authorization level is not controlled by the user. A user may send
+a `GET` request, supplying credentials in the `Authorization` request header and get a
+successful response, while attempting to set a `PUT` request to the same endpoint may
+return a `401 Unauthorized` response status.
+
+### Forbidden Access
+
+There also exists a `403 Forbidden` response status which enforces higher-level access-control
+to a resource regardless of authorization. Depending on the sensitivity of the resource, it
+may be more more desirable to simply return a `404 Not Found` response status to not reveal
+that the resource even exists. This may reduce the liklihood of being a target for attacks.
